@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fancy Web Page</title>
+    <title>Fancy Legal Bot</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f2f2f2;
+            background-color: #f9f9f9;
+            color: #333;
         }
         header {
-            background-color: #333;
+            background-color: #005ba8;
             color: #fff;
             padding: 20px;
             text-align: center;
@@ -23,7 +24,7 @@
             letter-spacing: 2px;
         }
         nav {
-            background-color: #444;
+            background-color: #0079c1;
             padding: 10px 0;
             text-align: center;
         }
@@ -33,21 +34,65 @@
             margin: 0 10px;
             font-size: 18px;
         }
-        section {
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             padding: 20px;
-            text-align: center;
+            margin: 0 auto;
+            max-width: 1200px;
         }
-        footer {
-            background-color: #333;
-            color: #fff;
+        .chatbot {
+            flex-grow: 1;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            text-align: center;
+            margin-right: 20px;
+        }
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .user-message {
+            background-color: #e6e6e6;
+            color: #333;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .bot-message {
+            background-color: #0079c1;
+            color: #fff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            text-align: right;
+        }
+        input[type="text"] {
+            width: calc(100% - 60px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #0079c1;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Fancy Web Page</h1>
+        <h1>Fancy Legal Bot</h1>
     </header>
     <nav>
         <a href="#">Home</a>
@@ -55,13 +100,37 @@
         <a href="#">Services</a>
         <a href="#">Contact</a>
     </nav>
-    <section>
-        <h2>Welcome to our Fancy Web Page!</h2>
-        <p>This is a place where elegance meets simplicity.</p>
-        <p>Feel free to explore.</p>
-    </section>
-    <footer>
-        <p>&copy; 2024 Fancy Web Page. All rights reserved.</p>
-    </footer>
+    <div class="container">
+        <div class="chatbot">
+            <div class="chat-container" id="chat-container"></div>
+            <form id="chat-form">
+                <input type="text" id="user-input" placeholder="Type your message...">
+                <input type="submit" value="Send">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const chatForm = document.getElementById('chat-form');
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+
+        chatForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userMessage = userInput.value;
+            if (userMessage.trim() === '') return;
+            appendMessage('user', userMessage);
+            // You can implement your chatbot logic here to respond to the user's message
+            userInput.value = '';
+        });
+
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add(`${sender}-message`);
+            messageElement.innerText = message;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
 </body>
 </html>
