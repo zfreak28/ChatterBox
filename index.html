@@ -110,27 +110,19 @@
         </div>
     </div>
 
-    <script>
-        const chatForm = document.getElementById('chat-form');
-        const chatContainer = document.getElementById('chat-container');
-        const userInput = document.getElementById('user-input');
-
-        chatForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const userMessage = userInput.value;
-            if (userMessage.trim() === '') return;
-            appendMessage('user', userMessage);
-            // You can implement your chatbot logic here to respond to the user's message
-            userInput.value = '';
-        });
-
-        function appendMessage(sender, message) {
-            const messageElement = document.createElement('div');
-            messageElement.classList.add(`${sender}-message`);
-            messageElement.innerText = message;
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    </script>
+    <script type="text/javascript" charset="utf-8">
+  (function (g, e, n, es, ys) {
+    g['_genesysJs'] = e;
+    g[e] = g[e] || function () {
+      (g[e].q = g[e].q || []).push(arguments)
+    };
+    g[e].t = 1 * new Date();
+    g[e].c = es;
+    ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
+  })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
+    environment: 'prod',
+    deploymentId: 'd9c26abc-2eb4-45ad-a545-e234123ba7ad'
+  });
+</script>
 </body>
 </html>
