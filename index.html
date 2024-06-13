@@ -1,34 +1,5 @@
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatter Bot</title>
-    
-</head>
-<body>
-
-<!-- Latest CDN production JavaScript and CSS -->
-<script src="https://global.oktacdn.com/okta-signin-widget/7.19.2/js/okta-sign-in.min.js" type="text/javascript"></script>
-<link href="https://global.oktacdn.com/okta-signin-widget/7.19.2/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
-
-<script>
-  const signIn = new OktaSignIn({baseUrl: 'https://genesys.okta.com'});
-
-  signIn.showSignInToGetTokens({
-    scopes: ['openid', 'profile'] // optional
-  }).then(function(tokens) {
-    // Store tokens
-  }).catch(function(error) {
-    // This function is invoked with errors the widget cannot recover from:
-    // Known errors: CONFIG_ERROR, UNSUPPORTED_BROWSER_ERROR
-  });
-</script>
-
-  
-    <script type="text/javascript" charset="utf-8">
+<script src=https://global.oktacdn.com/okta-auth-js/7.19.2/okta-auth-js.min.js type="text/javascript"></script>
+<script type="text/javascript" charset="utf-8">
   (function (g, e, n, es, ys) {
     g['_genesysJs'] = e;
     g[e] = g[e] || function () {
@@ -38,9 +9,86 @@
     g[e].c = es;
     ys = document.createElement('script'); ys.async = 1; ys.src = n; ys.charset = 'utf-8'; document.head.appendChild(ys);
   })(window, 'Genesys', 'https://apps.mypurecloud.com/genesys-bootstrap/genesys.min.js', {
-    environment: 'prod',
-    deploymentId: 'd9c26abc-2eb4-45ad-a545-e234123ba7ad'
+    environment: 'use1',
+    deploymentId: 'c832b226-8431-4b88-a50d-a84843206997',
+    debug: false
   });
 </script>
-</body>
-</html>
+<script>
+    const oktaConfig = {
+      redirectUri: 'https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard',
+      postLogoutRedirectUri: 'https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard',
+      clientId: '0oa1rmibafepMBGvm0h8',
+      issuer: 'https://genesys.okta.com/oauth2/default',
+      pkce: false,
+      responseType: 'code',
+    }
+    const authClient = new OktaAuth(oktaConfig);
+    const QueryString = window.location.search;
+    const urlParams = new URLSearchParams(QueryString);
+    if (urlParams.has('code')) {
+      //console.log('OTT: ' + urlParams.get('code'));
+      localStorage.setItem('myOTToken', urlParams.get('code'));
+      localStorage.setItem('redirectUri', 'https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard');
+      localStorage.setItem('g-nonce', document.cookie.split('; ').find(row => row.startsWith('okta-oauth-nonce')).split('=')[1]);
+    } else {
+      //console.log('no-code found!');
+    }
+    function login() {
+      authClient.setOriginalUri();
+      authClient.signInWithRedirect({originalUri: `https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard`,
+                                    ...oktaConfig,
+                              });
+Genesys('subscribe', 'Messenger.ready', function () {
+  Genesys(
+    'command',
+    'Messenger.open',
+    {},
+    () => {
+     /*fulfilled callback*/
+     console.log('Messenger opened');
+    },
+    (error) => {
+     /*rejected callback*/
+     console.log("Couldn't open messenger.", error);
+    }
+  );
+});
+    }
+    function logout() {
+      Genesys("command", "Auth.logout", {}, function(){
+        localStorage.removeItem('myOTToken');
+        authClient.signOut();
+        console.log('User signed out.');
+      });
+    }
+</script>
+<script async defer>
+    Genesys("registerPlugin", "AuthProvider", function (AuthProvider) {
+        AuthProvider.registerCommand("getAuthCode", function (e) {
+            console.log("Is OTT code ready?? " + localStorage.getItem('myOTToken'));
+            console.log("Already Authenticated.");
+            e.resolve({
+                authCode: localStorage.getItem('myOTToken'),
+                redirectUri: localStorage.getItem('redirectUri'),
+                nonce: localStorage.getItem('g-nonce')
+            });
+        });
+        AuthProvider.subscribe("Auth.authError", function (e) {
+            // This event is published when we do not receive authCode from your AuthProvider.getAuthCode command. Add your logic here to ensure the command resolves properly with the required data.
+            console.log("Not Authenticated, Logging In.");
+            login();
+        });
+        AuthProvider.registerCommand('reAuthenticate', function (e) {
+            // This command will be called when current authorization code and/or refresh token is expired.
+            console.log("Authentication Expired, Logging In.");
+            login();
+            e.resolve({
+                authCode: localStorage.getItem('myIdToken'),
+                redirectUri: localStorage.getItem('redirectUri'),
+                nonce: localStorage.getItem('g-nonce')
+            });
+        });
+        AuthProvider.ready();
+    });
+</script>
