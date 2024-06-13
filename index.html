@@ -16,8 +16,8 @@
 </script>
 <script>
     const oktaConfig = {
-      redirectUri: 'https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard',
-      postLogoutRedirectUri: 'https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard',
+      redirectUri: 'https://login.mypurecloud.com/oauth/authorize?',
+      postLogoutRedirectUri: 'https://https://zfreak28.github.io/ChatterBox/',
       clientId: '0oa1rmibafepMBGvm0h8',
       issuer: 'https://genesys.okta.com/oauth2/default',
       pkce: false,
@@ -29,14 +29,14 @@
     if (urlParams.has('code')) {
       //console.log('OTT: ' + urlParams.get('code'));
       localStorage.setItem('myOTToken', urlParams.get('code'));
-      localStorage.setItem('redirectUri', 'https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard');
+      localStorage.setItem('redirectUri', 'https://https://zfreak28.github.io/ChatterBox/');
       localStorage.setItem('g-nonce', document.cookie.split('; ').find(row => row.startsWith('okta-oauth-nonce')).split('=')[1]);
     } else {
       //console.log('no-code found!');
     }
     function login() {
       authClient.setOriginalUri();
-      authClient.signInWithRedirect({originalUri: `https://onegenesys--simpplr.vf.force.com/apex/simpplr__app?u=/site/a145e000001hDz7AAE/dashboard`,
+      authClient.signInWithRedirect({originalUri: `https://https://zfreak28.github.io/ChatterBox/`,
                                     ...oktaConfig,
                               });
 Genesys('subscribe', 'Messenger.ready', function () {
