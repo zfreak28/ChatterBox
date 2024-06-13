@@ -1,45 +1,41 @@
-<script src=https://global.oktacdn.com/okta-auth-js/7.19.2/okta-auth-js.min.js type="text/javascript"></script>
-
-<script>
-    const oktaConfig = {
-      redirectUri: 'https://login.mypurecloud.com/oauth/authorize?',
-      postLogoutRedirectUri: 'https://https://zfreak28.github.io/ChatterBox/',
-      clientId: '0oa1rmibafepMBGvm0h8',
-      issuer: 'https://genesys.okta.com/oauth2/default',
+script src=https://global.oktacdn.com/okta-auth-js/7.19.2/okta-auth-js.min.js type="text/javascript"></script>
+ 
+  <script type="text/javascript">
+ 
+    var authClient = new OktaAuth({
+      redirectUri: 'https://zfreak28.github.io/ChatterBox',
+      postLogoutRedirectUri: 'https://zfreak28.github.io/ChatterBox',
+      clientId: 9c12e180-fbb1-4fcb-be5e-2b93971912f2",
+      issuer: https://apps.mypurecloud.com/admin/#/admin/oauth/authorizations/9c12e180-fbb1-4fcb-be5e-2b93971912f2,
       pkce: false,
       responseType: 'code',
-    }
-    const authClient = new OktaAuth(oktaConfig);
+      //responseMode: 'fragment'     
+    });
+ 
     const QueryString = window.location.search;
     const urlParams = new URLSearchParams(QueryString);
     if (urlParams.has('code')) {
       //console.log('OTT: ' + urlParams.get('code'));
       localStorage.setItem('myOTToken', urlParams.get('code'));
-      localStorage.setItem('redirectUri', 'https://https://zfreak28.github.io/ChatterBox/');
+      localStorage.setItem('redirectUri', 'https://zfreak28.github.io/ChatterBox');
       localStorage.setItem('g-nonce', document.cookie.split('; ').find(row => row.startsWith('okta-oauth-nonce')).split('=')[1]);
     } else {
       //console.log('no-code found!');
     }
+ 
     function login() {
       authClient.setOriginalUri();
-      authClient.signInWithRedirect({originalUri: `https://https://zfreak28.github.io/ChatterBox/`,
-                                    ...oktaConfig,
-                              });
-Genesys('subscribe', 'Messenger.ready', function () {
-  Genesys(
-    'command',
-    'Messenger.open',
-    {},
-    () => {
-     /*fulfilled callback*/
-     console.log('Messenger opened');
-    },
-    (error) => {
-     /*rejected callback*/
-     console.log("Couldn't open messenger.", error);
+      authClient.signInWithRedirect();
     }
-  );
-});
+ 
+    function logout() {
+      Genesys("command", "Auth.logout", {}, function(){
+        localStorage.removeItem('myOTToken');
+        authClient.signOut();
+        console.log('User signed out.');
+      });
+    }
+  </script>
     }
     function logout() {
       Genesys("command", "Auth.logout", {}, function(){
